@@ -169,6 +169,7 @@ export type SimpleColumnType =
     |"varbit"// postgres
     |"tsvector" // postgres
     |"tsquery" // postgres
+    |"cube"
     |"uuid" // postgres, cockroachdb
     |"xml" // mssql, postgres
     |"json" // mysql, postgres, cockroachdb

@@ -148,7 +148,8 @@ export class PostgresDriver implements Driver {
         "tstzrange",
         "daterange",
         "geometry",
-        "geography"
+        "geography",
+        "cube"
     ];
 
     /**
@@ -298,6 +299,9 @@ export class PostgresDriver implements Driver {
         const hasCitextColumns = this.connection.entityMetadatas.some(metadata => {
             return metadata.columns.filter(column => column.type === "citext").length > 0;
         });
+        const hasCubeColumns = this.connection.entityMetadatas.some(metadata => {
+            return metadata.columns.filter(column => column.type === "cube").length > 0;
+        });
         const hasHstoreColumns = this.connection.entityMetadatas.some(metadata => {
             return metadata.columns.filter(column => column.type === "hstore").length > 0;
         });
@@ -324,6 +328,12 @@ export class PostgresDriver implements Driver {
                                 await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "citext"`);
                             } catch (_) {
                                 logger.log("warn", "At least one of the entities has citext column, but the 'citext' extension cannot be installed automatically. Please install it manually using superuser rights");
+                            }
+                        if (hasCubeColumns)
+                            try {
+                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "cube"`);
+                            } catch (_) {
+                                logger.log("warn", "At least one of the entities has citext column, but the 'cube' extension cannot be installed automatically. Please install it manually using superuser rights");
                             }
                         if (hasHstoreColumns)
                             try {
